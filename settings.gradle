@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "Heads UP V2"
