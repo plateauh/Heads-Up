@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Heads UP V2</string>
+    <string name="taboo1">taboo1</string>
+    <string name="taboo2">taboo2</string>
+    <string name="taboo3">taboo3</string>
+    <string name="celeb_name">Celeb name</string>
 </resources>
