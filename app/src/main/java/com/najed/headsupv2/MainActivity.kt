@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
         startButton = findViewById(R.id.start_btn)
         startButton.setOnClickListener {
             startActivity(Intent(this, CelebActivity::class.java))
-            finish()
         }
     }
 }
