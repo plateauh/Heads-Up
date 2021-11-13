@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/celeb_name"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_taboo1_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/taboo1" />
+
+            <TextView
+                android:id="@+id/item_taboo2_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/taboo2" />
+
+            <TextView
+                android:id="@+id/item_taboo3_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/taboo3" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/edit_ib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minWidth="48dp"
+        android:padding="15dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:srcCompat="@drawable/ic_baseline_edit_24"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/delete_ib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minWidth="48dp"
+        android:padding="15dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:srcCompat="@drawable/ic_baseline_delete_24"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</LinearLayout>

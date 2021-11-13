@@ -5,6 +5,8 @@
       <map>
         <entry key="app/src/main/res/layout/activity_data.xml" value="0.25846153846153846" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/alert_layout.xml" value="0.2765625" />
+        <entry key="app/src/main/res/layout/celeb_item.xml" value="0.4036458333333333" />
       </map>
     </option>
   </component>

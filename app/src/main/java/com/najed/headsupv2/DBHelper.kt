@@ -32,13 +32,27 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, "celebs.db", null, 1
         if (cursor.count != 0) {
             cursor.moveToFirst()
             do {
+                val celebID = cursor.getInt(cursor.getColumnIndexOrThrow("celeb_id"))
                 val celebName = cursor.getString(cursor.getColumnIndexOrThrow("celeb_name"))
                 val celebTaboo1 = cursor.getString(cursor.getColumnIndexOrThrow("celeb_taboo1"))
                 val celebTaboo2 = cursor.getString(cursor.getColumnIndexOrThrow("celeb_taboo2"))
                 val celebTaboo3 = cursor.getString(cursor.getColumnIndexOrThrow("celeb_taboo3"))
-                celebs.add(CelebItem(celebName, celebTaboo1, celebTaboo2, celebTaboo3))
+                celebs.add(CelebItem(celebID, celebName, celebTaboo1, celebTaboo2, celebTaboo3))
             } while (cursor.moveToNext())
         }
         return celebs
+    }
+
+    fun updateCeleb(celebID: Int, newCeleb: CelebItem): Boolean {
+        val contentValues = ContentValues()
+        contentValues.put("celeb_name", newCeleb.name)
+        contentValues.put("celeb_taboo1", newCeleb.taboo1)
+        contentValues.put("celeb_taboo2", newCeleb.taboo2)
+        contentValues.put("celeb_taboo3", newCeleb.taboo3)
+        return sqLiteDatabase.update("Celebrity", contentValues, "celeb_id=?", arrayOf(celebID.toString())) != 0
+    }
+
+    fun deleteCeleb(celebID: Int): Boolean {
+        return sqLiteDatabase.delete("Celebrity", "celeb_id=?", arrayOf(celebID.toString())) != 0
     }
 }
