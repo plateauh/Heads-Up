@@ -26,7 +26,7 @@ class DataActivity : AppCompatActivity() {
 
         addButton = findViewById(R.id.add_btn)
         addButton.setOnClickListener {
-            val celeb = CelebItem(0, celebEditTexts[0].text.toString(),
+            val celeb = CelebItem(celebEditTexts[0].text.toString(),
                 celebEditTexts[1].text.toString(),
                 celebEditTexts[2].text.toString(),
                 celebEditTexts[3].text.toString())

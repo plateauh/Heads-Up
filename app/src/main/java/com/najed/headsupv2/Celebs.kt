@@ -2,12 +2,9 @@ package com.najed.headsupv2
 
 import com.google.gson.annotations.SerializedName
 
-class Celeb : ArrayList<CelebItem>()
+class Celebs : ArrayList<CelebItem>()
 
 data class CelebItem (
-
-    @SerializedName("pk")
-    val pk: Int,
 
     @SerializedName("name")
     val name: String,

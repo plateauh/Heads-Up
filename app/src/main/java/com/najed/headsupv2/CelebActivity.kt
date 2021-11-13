@@ -6,22 +6,16 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import io.paperdb.Paper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CelebActivity : AppCompatActivity() {
 
     private var celebCount = 0 // to iterate celebrities
-    lateinit var celebs: Celeb // the list of celebrities
+    lateinit var celebs: Celebs // the list of celebrities
     lateinit var landscapeLayout: LinearLayout // the layout displayed in landscape mode
     lateinit var portraitLayout: ConstraintLayout // the layout displayed in portrait mode
     lateinit var timerTextView: TextView
@@ -30,29 +24,14 @@ class CelebActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_celeb)
+
+        val dbHelper = DBHelper(applicationContext)
+
         landscapeLayout = findViewById(R.id.celeb_info_layout)
         portraitLayout = findViewById(R.id.portrait_layout)
         timerTextView = findViewById(R.id.timer_tv)
 
-        /* Paper is a library alternative to shared preferences
-           but works as a fast NoSQL storage. Helped me in storing
-           data of non-primitive type, in this case is Celeb which
-           is an array list of CelebItems.
-           I chose to store data so I don't bother calling the API
-           each time running the app.
-         */
-        Paper.init(this) // initialize paper object
-        celebs = Paper.book().read("celebs", Celeb()) // get stored Celeb object. If there's none, the default value is an empty object
-        celebCount = Paper.book().read("celebsCount", 0)
-
-        if (celebs.isEmpty()){ // first time running the app, or data's wiped
-            setCelebs() // get data from the API
-            Log.d("celebCount", "inside if celebs.isEmpty()")
-        }
-        else { // not the first time running the app but at the beginning of the game
-            updateCelebViews()
-            Log.d("celebCount", "inside else, the count is $celebCount")
-        }
+        celebs = dbHelper.getAllCeleb()
 
         startTimer()
     }
@@ -65,27 +44,13 @@ class CelebActivity : AppCompatActivity() {
             landscapeLayout.visibility = VISIBLE
         }
         else {
-            Paper.book().write("celebsCount", ++celebCount) // to get new celebrity when phone get back to landscape mode
+            if (celebCount == celebs.size-1) celebCount = -1 // when reaching last celebrity
+            celebCount++ // to get new celebrity when phone get back to landscape mode
             landscapeLayout.visibility = INVISIBLE
             portraitLayout.visibility = VISIBLE
         }
     }
 
-    private fun setCelebs() {
-        val apiInterface = APIClient().getClient()?.create(APIInterface::class.java)
-        val call: Call<Celeb?>? = apiInterface!!.getCelebs()
-        call?.enqueue(object: Callback<Celeb?> {
-            override fun onResponse(call: Call<Celeb?>, response: Response<Celeb?>) {
-                celebs = response.body()!! // set the response to the object to be iterated through
-                updateCelebViews() // to be displayed first time
-                Paper.book().write("celebs", celebs) // store it in paper
-            }
-            override fun onFailure(call: Call<Celeb?>, t: Throwable) {
-                Toast.makeText(this@CelebActivity, t.message, Toast.LENGTH_SHORT).show()
-                call.cancel()
-            }
-        })
-    }
 
     // responsible of finding & updating celebrity TextViews
     private fun updateCelebViews() {
