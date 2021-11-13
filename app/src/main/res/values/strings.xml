@@ -8,4 +8,7 @@
     <string name="start">Start</string>
     <string name="please_rotate_device">Please Rotate Device</string>
     <string name="time">Time: --</string>
+    <string name="data">data</string>
+    <string name="name">Name</string>
+    <string name="add">Add</string>
 </resources>

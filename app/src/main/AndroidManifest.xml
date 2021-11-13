@@ -12,12 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HeadsUPV2">
         <activity
+            android:name=".DataActivity"
+            android:exported="false" />
+        <activity
             android:name=".CelebActivity"
-            android:screenOrientation="fullSensor"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:launchMode="singleInstance"/>
-
-        <activity android:name=".MainActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".MainActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
