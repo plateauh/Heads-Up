@@ -7,21 +7,31 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.najed.headsupv2.db.Celeb
+import com.najed.headsupv2.db.CelebsDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 class DataActivity : AppCompatActivity() {
 
     private lateinit var celebEditTexts: List<EditText>
     private lateinit var addButton: Button
     private lateinit var celebsRecyclerView: RecyclerView
+    private lateinit var celebs: List<Celeb>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data)
 
-        val dbHelper = DBHelper(applicationContext)
+        celebs = listOf()
 
+        CoroutineScope(IO).launch {
+            celebs = CelebsDatabase.getInstance(applicationContext).celebDAO().getAllCelebs()
+        }
         celebsRecyclerView = findViewById(R.id.celebs_rv)
-        val adapter = Adapter(dbHelper.getAllCeleb(), this)
+        val adapter = Adapter(celebs, this)
         celebsRecyclerView.adapter = adapter
         celebsRecyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -34,14 +44,15 @@ class DataActivity : AppCompatActivity() {
 
         addButton = findViewById(R.id.add_btn)
         addButton.setOnClickListener {
-            val celeb = CelebItem(0, celebEditTexts[0].text.toString(),
+            val celeb = Celeb(0, celebEditTexts[0].text.toString(),
                 celebEditTexts[1].text.toString(),
                 celebEditTexts[2].text.toString(),
                 celebEditTexts[3].text.toString())
-            if (dbHelper.addCeleb(celeb)) {
-                Toast.makeText(this, "${celeb.name} added", Toast.LENGTH_SHORT).show()
-                adapter.update()
+            CoroutineScope(IO).launch {
+                CelebsDatabase.getInstance(applicationContext).celebDAO().addCeleb(celeb)
             }
+            Toast.makeText(this, "${celeb.name} added", Toast.LENGTH_SHORT).show()
+            adapter.update()
         }
 
     }

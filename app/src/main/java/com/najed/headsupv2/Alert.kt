@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.najed.headsupv2.db.Celeb
+import com.najed.headsupv2.db.CelebsDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class Alert (private val context: Context, private val celeb: CelebItem) {
+class Alert (private val context: Context, private val celeb: Celeb) {
 
-    private var dbHelper = DBHelper(context)
     private val dialogBuilder = AlertDialog.Builder(context)
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val dialogLayout: View = layoutInflater.inflate(R.layout.alert_layout, null)
@@ -27,11 +31,12 @@ class Alert (private val context: Context, private val celeb: CelebItem) {
         editTexts[2].setText(celeb.taboo2)
         editTexts[3].setText(celeb.taboo3)
         dialogBuilder.setPositiveButton("Update") { _, _ ->
-            val newCeleb = CelebItem(0, editTexts[0].text.toString(), editTexts[1].text.toString(),
+            val newCeleb = Celeb(celeb.id, editTexts[0].text.toString(), editTexts[1].text.toString(),
                 editTexts[2].text.toString(), editTexts[3].text.toString())
-            if (dbHelper.updateCeleb(celeb.id, newCeleb)){
-                Toast.makeText(context, "Celebrity updated successfully", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                CelebsDatabase.getInstance(context).celebDAO().updateCeleb(newCeleb)
             }
+            Toast.makeText(context, "Celebrity updated successfully", Toast.LENGTH_SHORT).show()
         }
         dialogBuilder.setNegativeButton("Cancel"){ dialog, _ ->
                 dialog.cancel()
@@ -42,9 +47,10 @@ class Alert (private val context: Context, private val celeb: CelebItem) {
 
     fun deleteAlert() {
         dialogBuilder.setPositiveButton("Delete") { _, _ ->
-            if (dbHelper.deleteCeleb(celeb.id)){
-                Toast.makeText(context, "Celebrity deleted successfully", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                CelebsDatabase.getInstance(context).celebDAO().deleteCeleb(celeb)
             }
+            Toast.makeText(context, "Celebrity deleted successfully", Toast.LENGTH_SHORT).show()
         }
         dialogBuilder.setNegativeButton("Cancel"){ dialog, _ ->
             dialog.cancel()

@@ -11,27 +11,33 @@ import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.najed.headsupv2.db.Celeb
+import com.najed.headsupv2.db.CelebsDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CelebActivity : AppCompatActivity() {
 
     private var celebCount = 0 // to iterate celebrities
-    lateinit var celebs: Celebs // the list of celebrities
-    lateinit var landscapeLayout: LinearLayout // the layout displayed in landscape mode
-    lateinit var portraitLayout: ConstraintLayout // the layout displayed in portrait mode
-    lateinit var timerTextView: TextView
-    lateinit var celebTextViews: List<TextView> // the list of celebrity TextViews (name and taboos)
+    private lateinit var celebs: List<Celeb> // the list of celebrities
+    private lateinit var landscapeLayout: LinearLayout // the layout displayed in landscape mode
+    private lateinit var portraitLayout: ConstraintLayout // the layout displayed in portrait mode
+    private lateinit var timerTextView: TextView
+    private lateinit var celebTextViews: List<TextView> // the list of celebrity TextViews (name and taboos)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_celeb)
 
-        val dbHelper = DBHelper(applicationContext)
 
         landscapeLayout = findViewById(R.id.celeb_info_layout)
         portraitLayout = findViewById(R.id.portrait_layout)
         timerTextView = findViewById(R.id.timer_tv)
 
-        celebs = dbHelper.getAllCeleb()
+        CoroutineScope(Dispatchers.IO).launch {
+        celebs = CelebsDatabase.getInstance(applicationContext).celebDAO().getAllCelebs()
+        }
 
         startTimer()
     }

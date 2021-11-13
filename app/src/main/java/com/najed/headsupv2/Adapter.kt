@@ -5,8 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.najed.headsupv2.databinding.CelebItemBinding
+import com.najed.headsupv2.db.Celeb
+import com.najed.headsupv2.db.CelebsDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class Adapter(private var celebsList: Celebs,
+class Adapter(private var celebsList: List<Celeb>,
               private val context: Context):
     RecyclerView.Adapter<Adapter.ItemViewHolder>() {
 
@@ -41,7 +46,9 @@ class Adapter(private var celebsList: Celebs,
     override fun getItemCount() = celebsList.size
 
     fun update() {
-        celebsList = DBHelper(context).getAllCeleb()
+        CoroutineScope(Dispatchers.IO).launch {
+            celebsList = CelebsDatabase.getInstance(context).celebDAO().getAllCelebs()
+        }
         notifyDataSetChanged()
     }
 }
