@@ -9,7 +9,9 @@ import com.najed.headsupv2.db.Celeb
 import com.najed.headsupv2.db.CelebsDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Adapter(private var celebsList: List<Celeb>,
               private val context: Context):
@@ -48,6 +50,9 @@ class Adapter(private var celebsList: List<Celeb>,
     fun update() {
         CoroutineScope(Dispatchers.IO).launch {
             celebsList = CelebsDatabase.getInstance(context).celebDAO().getAllCelebs()
+            withContext(Main) {
+                notifyDataSetChanged()
+            }
         }
         notifyDataSetChanged()
     }

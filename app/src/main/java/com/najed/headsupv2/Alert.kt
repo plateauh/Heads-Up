@@ -10,7 +10,9 @@ import com.najed.headsupv2.db.Celeb
 import com.najed.headsupv2.db.CelebsDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Alert (private val context: Context, private val celeb: Celeb) {
 
@@ -35,8 +37,10 @@ class Alert (private val context: Context, private val celeb: Celeb) {
                 editTexts[2].text.toString(), editTexts[3].text.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 CelebsDatabase.getInstance(context).celebDAO().updateCeleb(newCeleb)
+                withContext(Main) {
+                    Toast.makeText(context, "Celebrity updated successfully", Toast.LENGTH_SHORT).show()
+                }
             }
-            Toast.makeText(context, "Celebrity updated successfully", Toast.LENGTH_SHORT).show()
         }
         dialogBuilder.setNegativeButton("Cancel"){ dialog, _ ->
                 dialog.cancel()
@@ -49,8 +53,10 @@ class Alert (private val context: Context, private val celeb: Celeb) {
         dialogBuilder.setPositiveButton("Delete") { _, _ ->
             CoroutineScope(Dispatchers.IO).launch {
                 CelebsDatabase.getInstance(context).celebDAO().deleteCeleb(celeb)
+                withContext(Main) {
+                    Toast.makeText(context, "Celebrity deleted successfully", Toast.LENGTH_SHORT).show()
+                }
             }
-            Toast.makeText(context, "Celebrity deleted successfully", Toast.LENGTH_SHORT).show()
         }
         dialogBuilder.setNegativeButton("Cancel"){ dialog, _ ->
             dialog.cancel()

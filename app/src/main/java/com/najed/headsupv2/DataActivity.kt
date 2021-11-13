@@ -12,7 +12,9 @@ import com.najed.headsupv2.db.CelebsDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DataActivity : AppCompatActivity() {
 
@@ -26,13 +28,16 @@ class DataActivity : AppCompatActivity() {
         setContentView(R.layout.activity_data)
 
         celebs = listOf()
+        celebsRecyclerView = findViewById(R.id.celebs_rv)
+        var adapter = Adapter(celebs, this)
 
         CoroutineScope(IO).launch {
             celebs = CelebsDatabase.getInstance(applicationContext).celebDAO().getAllCelebs()
+            withContext(Main) {
+                adapter = Adapter(celebs, this@DataActivity)
+                celebsRecyclerView.adapter = adapter
+            }
         }
-        celebsRecyclerView = findViewById(R.id.celebs_rv)
-        val adapter = Adapter(celebs, this)
-        celebsRecyclerView.adapter = adapter
         celebsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         celebEditTexts = listOf (
@@ -50,9 +55,11 @@ class DataActivity : AppCompatActivity() {
                 celebEditTexts[3].text.toString())
             CoroutineScope(IO).launch {
                 CelebsDatabase.getInstance(applicationContext).celebDAO().addCeleb(celeb)
+                withContext(Main) {
+                    Toast.makeText(this@DataActivity, "${celeb.name} added", Toast.LENGTH_SHORT).show()
+                    adapter.update()
+                }
             }
-            Toast.makeText(this, "${celeb.name} added", Toast.LENGTH_SHORT).show()
-            adapter.update()
         }
 
     }
